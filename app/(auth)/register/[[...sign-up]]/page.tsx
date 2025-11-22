@@ -1,9 +1,23 @@
 import { SignUp } from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <SignUp />;
+    <div className="flex flex-col items-center justify-center gap-12 h-screen">
+      <nav>
+        <Link href="/">
+          <Image
+            src="/assets/logo.svg"
+            alt="planning"
+            width={120}
+            height={120}
+          />
+        </Link>
+      </nav>
+      <div>
+        <SignUp />
+      </div>
     </div>
   );
 }
