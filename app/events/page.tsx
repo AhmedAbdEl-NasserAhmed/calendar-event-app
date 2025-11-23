@@ -1,9 +1,11 @@
-import { currentUser } from "@clerk/nextjs/server";
+import ClerkUserButton from "@/components/clerkUserButton";
 
 const page = async () => {
-  const user = await currentUser();
-
-  return <div>Hello from MR {user?.firstName}</div>;
+  return (
+    <div>
+      <ClerkUserButton />
+    </div>
+  );
 };
 
 export default page;

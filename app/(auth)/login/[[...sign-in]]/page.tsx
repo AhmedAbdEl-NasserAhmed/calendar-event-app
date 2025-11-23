@@ -16,7 +16,7 @@ export default function Page() {
         </Link>
       </nav>
       <div>
-        <SignIn signInUrl="/events" />
+        <SignIn forceRedirectUrl="/events" />
       </div>
     </div>
   );
