@@ -1,25 +1,32 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { CreateEventForm } from "./_createEventForm";
+import { cn } from "@/lib/utils";
 
 const CreateEventTrigger = () => {
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger>
-          <Button className="cursor-pointer">Create New Event</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>New Event</DialogHeader>
-          <CreateEventForm />
-        </DialogContent>
-      </Dialog>
-    </div>
+    <Dialog>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "bg-blue-500 text-white cursor-pointer hover:bg-blue-600"
+        )}
+      >
+        Create New Event
+      </DialogTrigger>
+      <DialogContent className="min-h-[700px]  ">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">New Event</DialogTitle>
+        </DialogHeader>
+        <CreateEventForm />
+      </DialogContent>
+    </Dialog>
   );
 };
 
