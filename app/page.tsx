@@ -1,7 +1,7 @@
 import ClerkSignIn from "@/components/clerkSignIn";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex h-screen flex-col items-center justify-center lg:flex-row lg:justify-between lg:w-3/4 lg:mx-auto gap-8 ">
       <div className="text-center">
