@@ -1,7 +1,8 @@
 import SignedInNavbar from "@/components/signedInNavbar";
+
 import { ReactNode } from "react";
 
-const layout = ({ children }: { children: ReactNode }) => {
+const Layout = async ({ children }: { children: ReactNode }) => {
   return (
     <div>
       <SignedInNavbar />
@@ -10,4 +11,4 @@ const layout = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default layout;
+export default Layout;

@@ -34,7 +34,7 @@ const SignedInNavbar = () => {
           </Link>
         </li>{" "}
         <li>
-          <Link className="flex items-center gap-4" href="/pofile">
+          <Link className="flex items-center gap-4" href="/profile">
             <Image
               src="/assets/public.svg"
               alt="Public Profile"
