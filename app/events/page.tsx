@@ -1,9 +1,9 @@
-import ClerkUserButton from "@/components/clerkUserButton";
+import SignedInNavbar from "@/components/signedInNavbar";
 
 const page = async () => {
   return (
     <div>
-      <ClerkUserButton />
+      <SignedInNavbar />
     </div>
   );
 };
