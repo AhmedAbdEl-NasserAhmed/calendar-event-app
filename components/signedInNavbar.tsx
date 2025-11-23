@@ -45,7 +45,6 @@ const SignedInNavbar = () => {
           </Link>
         </li>
       </ul>
-
       <ClerkUserButton />
     </nav>
   );
