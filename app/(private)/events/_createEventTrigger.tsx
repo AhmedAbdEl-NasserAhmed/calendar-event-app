@@ -20,7 +20,7 @@ const CreateEventTrigger = () => {
       >
         Create New Event
       </DialogTrigger>
-      <DialogContent className="min-h-[700px]  ">
+      <DialogContent className="max-h-[700px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">New Event</DialogTitle>
         </DialogHeader>

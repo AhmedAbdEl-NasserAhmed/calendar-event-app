@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
-
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -21,29 +20,16 @@ import {
   InputGroupTextarea
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-
-const formSchema = z.object({
-  eventName: z
-    .string()
-    .min(5, "Event name must be at least 5 characters.")
-    .max(32, "Event name must be at most 32 characters."),
-
-  duration: z
-    .number()
-    .min(5, "Duration must be at least 5.")
-    .max(32, "Duration must be at most 32."),
-
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
-
-  isActive: z.boolean()
-});
+import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import { useTransition } from "react";
+import { createNewEvent } from "./_action";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateEventForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<eventSchemaType>({
+    resolver: zodResolver(eventFormSchema),
     defaultValues: {
       eventName: "",
       duration: 0,
@@ -52,8 +38,20 @@ export function CreateEventForm() {
     }
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  async function onSubmit(data: eventSchemaType) {
+    startTransition(async () => {
+      try {
+        const { message, status } = await createNewEvent(data);
+        if (status === "Success") {
+          toast.success(message);
+          form.reset();
+        } else {
+          toast.error(message);
+        }
+      } catch {
+        toast.error("Failed to create event. Please try again.");
+      }
+    });
   }
 
   return (
@@ -173,13 +171,26 @@ export function CreateEventForm() {
           <Button
             className="cursor-pointer"
             type="button"
+            disabled={isPending}
             variant="outline"
             onClick={() => form.reset()}
           >
             Reset
           </Button>
-          <Button className="cursor-pointer" type="submit" form="form-rhf-demo">
-            Submit
+          <Button
+            className="cursor-pointer"
+            type="submit"
+            form="form-rhf-demo"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                Creating...
+                <Spinner />
+              </>
+            ) : (
+              "Create Event"
+            )}
           </Button>
         </Field>
       </CardFooter>
