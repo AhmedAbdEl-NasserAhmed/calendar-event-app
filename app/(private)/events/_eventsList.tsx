@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const EventsList = async () => {
   const res = await fetch(
@@ -22,6 +23,7 @@ const EventsList = async () => {
           eventName: string;
           duration: number;
           description: string;
+          isActive: boolean;
         }) => (
           <li
             key={item._id}
@@ -32,13 +34,19 @@ const EventsList = async () => {
               <p className="font-semibold">{item.duration} min</p>
             </div>
             <p className="overflow-hidden text-ellipsis whitespace-nowrap">
-              {item.description}
+              {item.description ? item.description : "No Description available"}
             </p>
             <div className="flex items-center justify-between ">
-              <Button variant="outline" className="cursor-pointer">
-                Copy link
-              </Button>
-              <Button className="bg-blue-400 cursor-pointer">Edit</Button>
+              {item.isActive && (
+                <Button variant="outline" className="cursor-pointer">
+                  Copy link
+                </Button>
+              )}
+              <Link href={`/events/${item._id}`}>
+                <Button type="button" className="bg-blue-400 cursor-pointer">
+                  Edit
+                </Button>
+              </Link>
             </div>
           </li>
         )
