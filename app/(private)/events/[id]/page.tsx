@@ -1,4 +1,5 @@
 import { Params } from "@/lib/type";
+import { EditEventForm } from "./_editEventForm";
 
 export default async function Page({ params }: { params: Params }) {
   const { id } = await params;
@@ -14,7 +15,9 @@ export default async function Page({ params }: { params: Params }) {
     }
   ).then((res) => res.json());
 
-  // Event must be
-
-  return <div></div>;
+  return (
+    <div className="w-3/5 mx-auto p-8">
+      <EditEventForm event={event.event} />
+    </div>
+  );
 }

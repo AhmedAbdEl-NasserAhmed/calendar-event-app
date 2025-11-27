@@ -1,7 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
 import {
   Field,
   FieldDescription,
@@ -17,22 +24,63 @@ import {
   InputGroupTextarea
 } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { redirect } from "next/navigation";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { deleteEvent, editEvent } from "./_action";
 
-export function EditEventForm({}) {
+export function EditEventForm({
+  event
+}: {
+  event: {
+    _id: string;
+    eventName: string;
+    duration: number;
+    description: string;
+    isActive: boolean;
+  };
+}) {
+  const [isPendingEditing, startTransitionEditing] = useTransition();
+
+  const [isPendingDeleting, startTransitionDeleting] = useTransition();
+
   const form = useForm<eventSchemaType>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
-      eventName: "",
-      duration: 0,
-      description: "",
-      isActive: true
+      eventName: event.eventName,
+      duration: event.duration,
+      description: event.description,
+      isActive: event.isActive
     }
   });
 
-  async function onSubmit(data: eventSchemaType) {}
+  async function onSubmit(data: eventSchemaType) {
+    startTransitionEditing(async () => {
+      const { status, message } = await editEvent(data, event._id);
+      if (status === "Success") {
+        toast.success(message);
+        redirect("/events");
+      } else {
+        toast.error(message);
+      }
+    });
+  }
+
+  async function onDeleteEvent() {
+    startTransitionDeleting(async () => {
+      const { status, message } = await deleteEvent(event._id);
+      if (status === "Success") {
+        toast.success(message);
+        redirect("/events");
+      } else {
+        toast.error(message);
+      }
+    });
+  }
 
   return (
     <Card>
@@ -149,6 +197,7 @@ export function EditEventForm({}) {
       <CardFooter>
         <Field orientation="horizontal">
           <Button
+            disabled={isPendingEditing}
             className="cursor-pointer"
             type="button"
             variant="outline"
@@ -156,7 +205,44 @@ export function EditEventForm({}) {
           >
             Reset
           </Button>
-          <Button className="cursor-pointer" type="submit" form="form-rhf-demo">
+          <Dialog>
+            <DialogTrigger
+              disabled={isPendingEditing}
+              className={cn(buttonVariants({ variant: "destructive" }))}
+            >
+              Delete
+            </DialogTrigger>
+            <DialogContent className="max-h-[700px] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold">
+                  Are you sure that you want to delete this Event
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  disabled={isPendingDeleting}
+                  variant="destructive"
+                  type="button"
+                  onClick={onDeleteEvent}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="default"
+                  type="button"
+                  disabled={isPendingDeleting}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Button
+            disabled={isPendingEditing}
+            className="cursor-pointer"
+            type="submit"
+            form="form-rhf-demo"
+          >
             Edit
           </Button>
         </Field>
