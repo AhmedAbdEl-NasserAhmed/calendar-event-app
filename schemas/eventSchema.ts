@@ -13,8 +13,15 @@ export const eventFormSchema = z.object({
 
   description: z
     .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
+    .optional()
+    .refine(
+      (val) => !val || val.length >= 20,
+      "Description must be at least 20 characters."
+    )
+    .refine(
+      (val) => !val || val.length <= 100,
+      "Description must be at most 100 characters."
+    ),
 
   isActive: z.boolean()
 });

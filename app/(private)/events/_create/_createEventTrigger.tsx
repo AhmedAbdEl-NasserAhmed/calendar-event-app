@@ -1,3 +1,5 @@
+"use client";
+
 import { buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,10 +10,16 @@ import {
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { CreateEventForm } from "./_createEventForm";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const CreateEventTrigger = () => {
+  const [isDialogopen, setIsDialogOpen] = useState<boolean>(true);
+
   return (
-    <Dialog>
+    <Dialog
+      open={isDialogopen}
+      onOpenChange={() => setIsDialogOpen((open) => !open)}
+    >
       <DialogTrigger
         className={cn(
           buttonVariants({ variant: "default" }),
@@ -24,7 +32,7 @@ const CreateEventTrigger = () => {
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">New Event</DialogTitle>
         </DialogHeader>
-        <CreateEventForm />
+        <CreateEventForm setIsDialogOpen={setIsDialogOpen} />
       </DialogContent>
     </Dialog>
   );

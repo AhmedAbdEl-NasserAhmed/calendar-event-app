@@ -1,5 +1,8 @@
+"use server";
+
 import { ApiResponse } from "@/lib/type";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import { revalidatePath } from "next/cache";
 
 export const createNewEvent = async (
   data: eventSchemaType
@@ -30,6 +33,8 @@ export const createNewEvent = async (
         message: "Failed to create event"
       };
     }
+
+    revalidatePath("/events");
 
     return {
       status: "Success",

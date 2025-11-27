@@ -25,7 +25,11 @@ import { useTransition } from "react";
 import { createNewEvent } from "./_action";
 import { Spinner } from "@/components/ui/spinner";
 
-export function CreateEventForm() {
+export function CreateEventForm({
+  setIsDialogOpen
+}: {
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<eventSchemaType>({
@@ -45,6 +49,7 @@ export function CreateEventForm() {
         if (status === "Success") {
           toast.success(message);
           form.reset();
+          setIsDialogOpen(false);
         } else {
           toast.error(message);
         }
@@ -124,7 +129,7 @@ export function CreateEventForm() {
                     />
                     <InputGroupAddon align="block-end">
                       <InputGroupText className="tabular-nums">
-                        {field.value.length}/100 characters
+                        {field.value ? field.value.length : 0}/100 characters
                       </InputGroupText>
                     </InputGroupAddon>
                   </InputGroup>

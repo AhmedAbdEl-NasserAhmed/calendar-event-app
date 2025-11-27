@@ -1,10 +1,17 @@
-import CreateEventTrigger from "./_createEventTrigger";
+import { Suspense } from "react";
+import CreateEventTrigger from "./_create/_createEventTrigger";
+import EventsList from "./_eventsList";
 
 const page = async () => {
   return (
-    <div className="flex flex-col items-center justify-center mt-4 gap-12">
-      <h2 className="text-6xl font-extrabold">Events</h2>
-      <CreateEventTrigger />
+    <div className="flex flex-col justify-center gap-12 px-12 py-4">
+      <h2 className="text-6xl font-extrabold text-center">Events</h2>
+      <div className="text-center">
+        <CreateEventTrigger />
+      </div>
+      <Suspense fallback={<div>Loading events...</div>}>
+        <EventsList />
+      </Suspense>
     </div>
   );
 };
