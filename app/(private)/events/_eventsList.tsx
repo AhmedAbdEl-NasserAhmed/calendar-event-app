@@ -15,7 +15,7 @@ const EventsList = async () => {
   const data = await res.json();
 
   return (
-    <ul className="flex items-center flex-wrap gap-4">
+    <ul className="grid gap-8 grid-cols-[repeat(auto-fit,minmax(320px,1fr))] w-full ">
       {data.data.map(
         (item: {
           _id: string;
@@ -25,7 +25,7 @@ const EventsList = async () => {
         }) => (
           <li
             key={item._id}
-            className="flex flex-col gap-4 bg-white shadow-xl rounded-2xl w-[350px] p-6  border-2 border-blue-300 "
+            className="flex flex-col gap-4 bg-white shadow-xl rounded-2xl p-6  border-2 border-blue-300 w-full "
           >
             <div className="flex flex-col gap-4 ">
               <h2>{item.eventName}</h2>

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 const CreateEventTrigger = () => {
-  const [isDialogopen, setIsDialogOpen] = useState<boolean>(true);
+  const [isDialogopen, setIsDialogOpen] = useState<boolean>(false);
 
   return (
     <Dialog
