@@ -2,6 +2,7 @@
 
 import { ApiResponse } from "@/lib/type";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export const createNewEvent = async (
@@ -16,6 +17,10 @@ export const createNewEvent = async (
       };
     }
 
+    const { userId } = await auth();
+
+    const eventBody = { ...data, createdBy: userId };
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_LOCALHOST}/api/v1/events`,
       {
@@ -23,7 +28,7 @@ export const createNewEvent = async (
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(eventBody)
       }
     );
 

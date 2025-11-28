@@ -1,16 +1,19 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import getToken from "@/utils/getToken";
 import Link from "next/link";
 
 const EventsList = async () => {
+  const token = await getToken();
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_LOCALHOST}/api/v1/events`,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        cache: "no-store"
-      }
+        Authorization: `Bearer ${token}`
+      },
+      cache: "no-store"
     }
   );
 
