@@ -2,6 +2,7 @@
 
 import { ApiResponse } from "@/lib/type";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import getToken from "@/utils/getToken";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -19,6 +20,8 @@ export const createNewEvent = async (
 
     const { userId } = await auth();
 
+    const token = await getToken();
+
     const eventBody = { ...data, createdBy: userId };
 
     const response = await fetch(
@@ -26,6 +29,7 @@ export const createNewEvent = async (
       {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(eventBody)

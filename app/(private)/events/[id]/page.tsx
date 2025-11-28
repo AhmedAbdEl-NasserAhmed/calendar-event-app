@@ -1,7 +1,10 @@
-import { Params } from "@/lib/type";
 import { EditEventForm } from "./_editEventForm";
 
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
 
   const event = await fetch(
