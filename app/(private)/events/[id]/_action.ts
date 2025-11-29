@@ -32,8 +32,6 @@ export const editEvent = async (
       }
     );
 
-    console.log(data);
-
     if (!response.ok) {
       return {
         status: "Error",

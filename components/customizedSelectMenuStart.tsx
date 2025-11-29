@@ -31,8 +31,6 @@ export function CustomizedSelectMenuStart({
   endTime: string;
   disabledByRow: boolean;
 }) {
-  console.log(endTime);
-
   return (
     <Select
       disabled={disabledByRow}
