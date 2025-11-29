@@ -1,8 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -19,11 +16,14 @@ import {
   InputGroupText,
   InputGroupTextarea
 } from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { createNewEvent } from "./_action";
-import { Spinner } from "@/components/ui/spinner";
 
 export function CreateEventForm({
   setIsDialogOpen
