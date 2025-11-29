@@ -2,6 +2,7 @@
 
 import { ApiResponse } from "@/lib/type";
 import { eventFormSchema, eventSchemaType } from "@/schemas/eventSchema";
+import getToken from "@/utils/getToken";
 
 export const editEvent = async (
   data: eventSchemaType,
@@ -17,16 +18,21 @@ export const editEvent = async (
       };
     }
 
+    const token = await getToken();
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_LOCALHOST}/api/v1/events/${id}`,
       {
         method: "PATCH",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       }
     );
+
+    console.log(data);
 
     if (!response.ok) {
       return {
@@ -49,12 +55,14 @@ export const editEvent = async (
 
 export const deleteEvent = async (id: string): Promise<ApiResponse> => {
   try {
+    const token = await getToken();
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_LOCALHOST}/api/v1/events/${id}`,
       {
         method: "Delete",
         headers: {
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${token}`
         }
       }
     );

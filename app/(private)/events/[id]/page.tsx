@@ -1,3 +1,4 @@
+import getToken from "@/utils/getToken";
 import { EditEventForm } from "./_editEventForm";
 
 export default async function Page({
@@ -7,12 +8,14 @@ export default async function Page({
 }) {
   const { id } = await params;
 
+  const token = await getToken();
+
   const event = await fetch(
     `${process.env.NEXT_PUBLIC_LOCALHOST}/api/v1/events/${id}`,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${token}`
       },
       cache: "no-cache"
     }

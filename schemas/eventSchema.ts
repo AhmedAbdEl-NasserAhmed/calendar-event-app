@@ -9,7 +9,7 @@ export const eventFormSchema = z.object({
   duration: z
     .number()
     .min(5, "Duration must be at least 5.")
-    .max(60, "Duration must be at most 60."),
+    .max(300, "Duration must be at most 300."),
 
   description: z
     .string()

@@ -9,9 +9,11 @@ const page = async ({
     book: [userId, eventId]
   } = await params;
 
-  console.log(userId, eventId);
-
-  return <div></div>;
+  return (
+    <div>
+      {userId} {eventId}
+    </div>
+  );
 };
 
 export default page;
