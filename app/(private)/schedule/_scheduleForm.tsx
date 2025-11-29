@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomizedSelectMenuStart } from "@/components/customizedSelectMenuStart";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -7,24 +8,18 @@ import {
   FieldGroup,
   FieldLabel
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusCircle } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import { ScheduleData } from "./page";
-import { Dispatch, SetStateAction } from "react";
+import { CustomizedSelectMenuEnd } from "@/components/customizedSelectMenuEnd";
 
-const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
-
-const timeRangeSchema = z
-  .object({
-    from: z.string().regex(timePattern, "Invalid time"),
-    to: z.string().regex(timePattern, "Invalid time")
-  })
-  .refine((v) => v.from < v.to, {
-    path: ["from"],
-    message: "Start time must be greater than end time"
-  });
+const timeRangeSchema = z.object({
+  from: z.string(),
+  to: z.string()
+});
 
 const formSchema = z.record(z.string(), z.array(timeRangeSchema));
 
@@ -67,7 +62,7 @@ export function CreateScheduleForm({
             form="form-rhf-demo"
             onClick={() => append({ from: "", to: "" })}
           >
-            Add
+            <PlusCircle />
           </Button>
         </div>
         <div
@@ -86,14 +81,13 @@ export function CreateScheduleForm({
                       <FieldLabel htmlFor={`form-rhf-demo-from-${index}`}>
                         From
                       </FieldLabel>
-                      <Input
-                        {...field}
-                        type="time"
+                      <CustomizedSelectMenuStart
+                        disabledByRow={fields.length - 1 > index}
+                        endTime={form.watch()[day][index - 1]?.to}
+                        plcaeHolder="Select Start Time"
+                        fieldState={fieldState}
                         id={`form-rhf-demo-from-${index}`}
-                        aria-invalid={fieldState.invalid}
-                        placeholder="From"
-                        autoComplete="off"
-                        onChange={(e) => field.onChange(e.target.value)}
+                        field={field}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -109,14 +103,13 @@ export function CreateScheduleForm({
                       <FieldLabel htmlFor={`form-rhf-demo-to-${index}`}>
                         To
                       </FieldLabel>
-                      <Input
-                        {...field}
+                      <CustomizedSelectMenuEnd
+                        disabledByRow={fields.length - 1 > index}
+                        startTime={form.watch()[day][index].from}
+                        plcaeHolder="Select End Time"
+                        fieldState={fieldState}
                         id={`form-rhf-demo-to-${index}`}
-                        type="time"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="To"
-                        autoComplete="off"
-                        onChange={(e) => field.onChange(e.target.value)}
+                        field={field}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
