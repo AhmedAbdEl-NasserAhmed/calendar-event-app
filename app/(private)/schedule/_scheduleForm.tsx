@@ -31,7 +31,7 @@ export function CreateScheduleForm({
     }
   });
 
-  const currentIndexV2 = useRef(0);
+  const currentIndex = useRef(0);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -51,8 +51,8 @@ export function CreateScheduleForm({
   }
 
   function handleAddingNewSlot() {
-    const from = watchedData[currentIndexV2.current]?.from;
-    const to = watchedData[currentIndexV2.current]?.to;
+    const from = watchedData[currentIndex.current]?.from;
+    const to = watchedData[currentIndex.current]?.to;
 
     if (fields.length === 0) {
       append({ from: "", to: "" });
@@ -60,7 +60,7 @@ export function CreateScheduleForm({
 
     if (from && to) {
       append({ from: "", to: "" });
-      currentIndexV2.current = fields.length;
+      currentIndex.current = fields.length;
     } else if ((!from || !to) && fields.length > 0) {
       toast.error("Please fill the slot first");
     }
@@ -141,7 +141,7 @@ export function CreateScheduleForm({
                     variant="destructive"
                     onClick={() => {
                       remove(index);
-                      currentIndexV2.current = index - 1;
+                      currentIndex.current = index - 1;
                     }}
                   >
                     Delete
