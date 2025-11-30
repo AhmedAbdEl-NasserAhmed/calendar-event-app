@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomizedSelectMenuEnd } from "@/components/customizedSelectMenuEnd";
 import { CustomizedSelectMenuStart } from "@/components/customizedSelectMenuStart";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,16 +11,35 @@ import {
 } from "@/components/ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircle } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import { ScheduleData } from "./page";
-import { CustomizedSelectMenuEnd } from "@/components/customizedSelectMenuEnd";
+import { toast } from "sonner";
 
-const timeRangeSchema = z.object({
-  from: z.string(),
-  to: z.string()
-});
+const timeRangeSchema = z
+  .object({
+    from: z.string().regex(/^(0[0-9]|1\d|2[0-3]):([0-5]\d)$/, {
+      message: "Invalid time format (HH:MM)"
+    }),
+    to: z.string().regex(/^(0[0-9]|1\d|2[0-3]):([0-5]\d)$/, {
+      message: "Invalid time format (HH:MM)"
+    })
+  })
+  .refine(
+    ({ from, to }) => {
+      const fromMinutes =
+        parseInt(from.split(":")[0]) * 60 + parseInt(from.split(":")[1]);
+      const toMinutes =
+        parseInt(to.split(":")[0]) * 60 + parseInt(to.split(":")[1]);
+
+      return fromMinutes < toMinutes;
+    },
+    {
+      message: "End time must be later than start time",
+      path: ["to"] // show error under the "to" field
+    }
+  );
 
 const formSchema = z.record(z.string(), z.array(timeRangeSchema));
 
@@ -39,6 +59,8 @@ export function CreateScheduleForm({
     }
   });
 
+  const currentIndexV2 = useRef(0);
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: day as never
@@ -51,6 +73,22 @@ export function CreateScheduleForm({
     ]);
   }
 
+  function handleAddingNewSlot() {
+    const from = form.watch()[day][currentIndexV2.current]?.from;
+    const to = form.watch()[day][currentIndexV2.current]?.to;
+
+    if (fields.length === 0) {
+      append({ from: "", to: "" });
+    }
+
+    if (from && to) {
+      append({ from: "", to: "" });
+      currentIndexV2.current = fields.length;
+    } else if (!from && !to && fields.length > 0) {
+      toast.error("Please fill the slot first");
+    }
+  }
+
   return (
     <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
@@ -60,7 +98,7 @@ export function CreateScheduleForm({
             type="button"
             className="cursor-pointer"
             form="form-rhf-demo"
-            onClick={() => append({ from: "", to: "" })}
+            onClick={handleAddingNewSlot}
           >
             <PlusCircle />
           </Button>
@@ -124,7 +162,10 @@ export function CreateScheduleForm({
                     className="cursor-pointer"
                     type="button"
                     variant="destructive"
-                    onClick={() => remove(index)}
+                    onClick={() => {
+                      remove(index);
+                      currentIndexV2.current = index - 1;
+                    }}
                   >
                     Delete
                   </Button>

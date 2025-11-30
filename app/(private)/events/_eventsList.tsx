@@ -22,7 +22,7 @@ const EventsList = async () => {
 
   return (
     <ul className="grid gap-8 grid-cols-[repeat(auto-fit,minmax(320px,1fr))] w-full ">
-      {data.data.map(
+      {data?.data.map(
         (item: {
           _id: string;
           eventName: string;
