@@ -16,6 +16,8 @@ export type ScheduleData = {
 const SchedulePage = () => {
   const [scheduleData, setScheduleData] = useState<ScheduleData[]>([]);
 
+  console.log(scheduleData);
+
   return (
     <Card className="w-3/5 mx-auto my-16">
       <CardContent className="flex flex-col gap-8">

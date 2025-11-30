@@ -9,41 +9,13 @@ import {
   FieldGroup,
   FieldLabel
 } from "@/components/ui/field";
+import { formSchema, FormSchema } from "@/schemas/timeFormat";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircle } from "lucide-react";
 import { Dispatch, SetStateAction, useRef } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import z from "zod";
-import { ScheduleData } from "./page";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-
-const timeRangeSchema = z
-  .object({
-    from: z.string().regex(/^(0[0-9]|1\d|2[0-3]):([0-5]\d)$/, {
-      message: "Invalid time format (HH:MM)"
-    }),
-    to: z.string().regex(/^(0[0-9]|1\d|2[0-3]):([0-5]\d)$/, {
-      message: "Invalid time format (HH:MM)"
-    })
-  })
-  .refine(
-    ({ from, to }) => {
-      const fromMinutes =
-        parseInt(from.split(":")[0]) * 60 + parseInt(from.split(":")[1]);
-      const toMinutes =
-        parseInt(to.split(":")[0]) * 60 + parseInt(to.split(":")[1]);
-
-      return fromMinutes < toMinutes;
-    },
-    {
-      message: "End time must be later than start time",
-      path: ["to"] // show error under the "to" field
-    }
-  );
-
-const formSchema = z.record(z.string(), z.array(timeRangeSchema));
-
-type FormSchema = z.infer<typeof formSchema>;
+import { ScheduleData } from "./page";
 
 export function CreateScheduleForm({
   day,
@@ -66,6 +38,11 @@ export function CreateScheduleForm({
     name: day as never
   });
 
+  const watchedData = useWatch({
+    control: form.control,
+    name: day
+  });
+
   async function onSubmit(data: FormSchema) {
     setScheduleData((prev) => [
       ...prev.filter((d) => d.id !== day),
@@ -74,8 +51,8 @@ export function CreateScheduleForm({
   }
 
   function handleAddingNewSlot() {
-    const from = form.watch()[day][currentIndexV2.current]?.from;
-    const to = form.watch()[day][currentIndexV2.current]?.to;
+    const from = watchedData[currentIndexV2.current]?.from;
+    const to = watchedData[currentIndexV2.current]?.to;
 
     if (fields.length === 0) {
       append({ from: "", to: "" });
@@ -84,7 +61,7 @@ export function CreateScheduleForm({
     if (from && to) {
       append({ from: "", to: "" });
       currentIndexV2.current = fields.length;
-    } else if (!from && !to && fields.length > 0) {
+    } else if ((!from || !to) && fields.length > 0) {
       toast.error("Please fill the slot first");
     }
   }
@@ -121,7 +98,7 @@ export function CreateScheduleForm({
                       </FieldLabel>
                       <CustomizedSelectMenuStart
                         disabledByRow={fields.length - 1 > index}
-                        endTime={form.watch()[day][index - 1]?.to}
+                        endTime={watchedData[index - 1]?.to}
                         plcaeHolder="Select Start Time"
                         fieldState={fieldState}
                         id={`form-rhf-demo-from-${index}`}
@@ -143,7 +120,7 @@ export function CreateScheduleForm({
                       </FieldLabel>
                       <CustomizedSelectMenuEnd
                         disabledByRow={fields.length - 1 > index}
-                        startTime={form.watch()[day][index].from}
+                        startTime={watchedData[index]?.from}
                         plcaeHolder="Select End Time"
                         fieldState={fieldState}
                         id={`form-rhf-demo-to-${index}`}
